@@ -105,15 +105,15 @@ since the previous run.
 
 ## Design Decisions and Tradeoffs
 
-- JSON instead of a .txt file for monitor state. You originally planned to save only conversation_id in a text file, then you realized: essentially, “wait, how will it know what we researched?” That led you to store both conversation_id and research_question in JSON. Tradeoff: slightly more state handling, but the monitor can actually reconstruct what it's monitoring.
+- JSON instead of a .txt file for monitor state. I originally planned to save only conversation_id in a text file, then realized that I wouldn't know what was researched. That led me to store both conversation_id and research_question in JSON. Tradeoff: slightly more state handling, but the monitor can actually reconstruct what it's monitoring.
 
-- Reuse conversationId instead of starting a completely fresh research thread. I wanted the second run to ask “What has changed since the last run?” against the existing conversation. Why: it preserves the research context between runs.
+- Reuse conversationId instead of starting a completely fresh research thread. I wanted the second run to ask “What has changed since the last run?” against the existing conversation. Why? It preserves the research context between runs.
 
-- Polling instead of streaming. Polling worked better for a simple prototype. Tradeoff: straightforward implementation, but a production version should have timeout/retry/backoff handling.
+- Polling instead of streaming. Polling worked better for a simple prototype. Tradeoff: straightforward implementation, but a production version should have timeout/retry/backoff handling. Would try to incorporate streaming if I had a bit more time.
 
-- One predictable monitor.json instead of monitor_{conversation_id}.json. We realized there was a chicken-and-egg problem: on startup, you wouldn't know the conversation ID yet, so you wouldn't know which filename to look for. Tradeoff: simple lookup, but currently supports only one active monitor.
+- One predictable monitor.json instead of monitor_{conversation_id}.json. On startup, you wouldn't know the conversation ID yet, so you wouldn't know which filename to look for. Tradeoff: simple lookup, but currently supports only one active monitor.
 
-- Saving the GenSearch response as Markdown files. You wanted each completed research result stored locally rather than only printed to the terminal. That gives you persistent research output/history.
+- Saving the GenSearch response as Markdown files. I wanted each completed research result stored locally rather than only printed to the terminal. That gives you persistent research output/history.
 
 - Scheduling was deliberately left out of the MVP. The original monitor idea mentioned running on a schedule, but we decided the important prototype was first-run research → saved state → later follow-up. Tradeoff: not fully automated yet, but much smaller scope and easier to validate.
 
@@ -208,3 +208,16 @@ simulated response data.
 
 Live end-to-end execution requires valid AlphaSense Agent API
 credentials.
+
+## Final Testing
+
+No return or error = success
+```
+python -m py_compile monitor.py
+```
+Error return, need official credentials
+```
+python monitor.py
+```
+
+

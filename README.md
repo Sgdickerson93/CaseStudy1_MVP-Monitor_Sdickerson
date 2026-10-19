@@ -208,5 +208,3 @@ simulated response data.
 
 Live end-to-end execution requires valid AlphaSense Agent API
 credentials.
-
-# Feeback For Documentation
